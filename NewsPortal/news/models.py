@@ -1,3 +1,4 @@
+import django.db.models
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,15 +8,30 @@ class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
-    def update_rating(self):
-        """
-        суммарный рейтинг каждой статьи автора умножается на 3;
-        суммарный рейтинг всех комментариев автора;
-        суммарный рейтинг всех комментариев к статьям автора.
+    @staticmethod
+    def query_rating_sum(query: django.db.models.query.QuerySet):
+        summ = 0
+        for i in range(len(query)):
+            summ += query[i]["rating"]
+        return summ
 
-        """
-        #posts = Post.objects.filter(Post.author == self.user).values("rating")
-        pass
+
+    def update_rating(self):
+
+        posts = Post.objects.filter(author_id=self.user_id)
+        posts_ratings = Author.query_rating_sum(posts.values("rating"))
+        comments_ratings = Author.query_rating_sum(Comment.objects.filter(user_id=self.user_id).values("rating"))
+
+        compost_ratings = 0
+        for i in range(len(posts)):
+            compost_ratings += Author.query_rating_sum(Comment.objects.filter(post_id=posts[i].id).values("rating"))
+
+        print(f"Расчет рейтинга: по постам {posts_ratings}, по комментариям {comments_ratings},"
+              f" по комментариям к постам {compost_ratings},\n"
+              f"Итого {posts_ratings * 3 + comments_ratings + compost_ratings}")
+
+        self.rating = posts_ratings * 3 + comments_ratings + compost_ratings
+        self.save()
 
 
 class Category(models.Model):
