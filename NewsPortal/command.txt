@@ -1,0 +1,59 @@
+from news.models import *
+
+# Создаем пользователей
+User.objects.create_user('Иванов Иван Иванович')
+User.objects.create_user('Петров Петр Петрович')
+
+# Делаем пользователей авторами
+Author.objects.create(user_id = 1)
+Author.objects.create(user_id = 2)
+
+# Создаем категории
+Category.objects.create(name = 'Компьютеры')
+Category.objects.create(name = 'Программирование')
+Category.objects.create(name = 'Операционные системы')
+Category.objects.create(name = 'Фреймворки')
+
+# Создаем 2 статьи и 1 новость
+text_ = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+
+Post.objects.create(post_type = "A", title = "de Finibus Bonorum et Malorum", text = text_, author_id = 1)
+
+text_ = "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+
+Post.objects.create(post_type = "A", title = "1.10.32 de Finibus Bonorum et Malorum (eng)", text = text_, author_id = 1)
+
+text_ = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+Post.objects.create(post_type = "N", title = "Lorem Ipsum", text = text_, author_id = 2)
+
+# Присваиваем новостям различные категории
+PostCategory.objects.create(post_id = 1, category_id = 1)
+PostCategory.objects.create(post_id = 1, category_id = 3)
+PostCategory.objects.create(post_id = 1, category_id = 4)
+PostCategory.objects.create(post_id = 2, category_id = 1)
+PostCategory.objects.create(post_id = 2, category_id = 2)
+PostCategory.objects.create(post_id = 3, category_id = 2)
+PostCategory.objects.create(post_id = 3, category_id = 4)
+
+# Создаем комментарии к постам
+text_ = "In libero ante, lobortis vel ornare in, ultricies nec elit. Etiam facilisis justo quis laoreet mollis. Proin felis orci, consectetur sed risus ut, laoreet tristique sapien. Nulla eu est aliquam, suscipit velit at, efficitur risus. Suspendisse egestas venenatis tellus quis malesuada. Suspendisse et leo condimentum, pretium eros id, luctus orci. Praesent nec porta risus, sed consequat libero. Nunc tincidunt egestas elementum. Curabitur lacus nulla, ultricies eu lacus vitae, accumsan varius urna. Cras ac est eu tellus feugiat ultricies et quis velit."
+
+Comment.objects.create(text = text_, post_id = 1, user_id = 2)
+
+text_ = "In nec dictum arcu. Pellentesque hendrerit, lectus ut imperdiet malesuada, tortor arcu maximus enim, id bibendum diam arcu vel risus. Sed at nulla sed est maximus aliquet ac nec orci. In convallis non mauris ac rhoncus. Vestibulum justo urna, pretium semper feugiat at, varius vel neque. Curabitur lacinia elit in sapien cursus, id mattis lorem auctor. Praesent ultricies ligula blandit convallis varius. Donec vel arcu quis nisl consectetur vestibulum. Vestibulum dolor lectus, facilisis eu mi cursus, rutrum iaculis risus. Cras eget convallis purus."
+
+Comment.objects.create(text = text_, post_id = 1, user_id = 2)
+
+text_ = "Quisque mollis urna erat, a suscipit purus vestibulum at. In lorem justo, eleifend ut faucibus sollicitudin, lacinia eget eros. Nullam non purus eget quam dignissim condimentum sed eget sapien. In non ex lectus. Mauris vel odio vitae eros mattis semper. Quisque nec nisl tortor. Aenean tincidunt purus a nunc sagittis elementum."
+
+Comment.objects.create(text = text_, post_id = 2, user_id = 2)
+
+text_ = "Donec eu nisl et turpis dapibus placerat et sed odio. Quisque ut ultrices lectus. Suspendisse tempus condimentum molestie. Mauris vitae lectus ante. Aenean ante nulla, lacinia vitae tempus eget, vehicula eget felis. Nunc eu dignissim justo. Fusce dapibus nunc sit amet pulvinar sollicitudin. Duis mattis ipsum magna, quis ullamcorper quam consequat sit amet. Nunc in aliquam tortor, vitae condimentum nisi. Nunc ullamcorper dui sed ipsum posuere scelerisque. Vivamus iaculis consectetur neque ut ornare."
+
+Comment.objects.create(text = text_, post_id = 2, user_id = 2)
+
+text_ = "Praesent suscipit quam id feugiat gravida. Duis eget lorem et ante aliquet pretium at porttitor odio. Quisque tortor ligula, facilisis id eros nec, pellentesque vestibulum dolor. Nam tempor pharetra gravida. Proin interdum, libero eget molestie dictum, tellus nulla sagittis diam, a fermentum nibh odio non eros. Praesent laoreet nisl sit amet enim varius, vitae tempus nulla blandit. Morbi orci neque, gravida eu rhoncus ac, dignissim nec nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In id nibh orci. Nullam purus metus, ullamcorper nec turpis sed, lacinia tempus nisi. Quisque volutpat erat sed leo tempus commodo. Nulla facilisi."
+
+Comment.objects.create(text = text_, post_id = 3, user_id = 1)
+
