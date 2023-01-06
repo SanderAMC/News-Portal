@@ -14,7 +14,7 @@ class Author(models.Model):
         суммарный рейтинг всех комментариев к статьям автора.
 
         """
-        posts = Post.objects.filter(Post.author == self.user).values("rating")
+        #posts = Post.objects.filter(Post.author == self.user).values("rating")
         pass
 
 
@@ -37,16 +37,15 @@ class Post(models.Model):
 
 
     def like(self):
-
         self.rating += 1
         self.save()
 
 
     def dislike(self):
-
         if self.rating > 0:
             self.rating -= 1
         self.save()
+
 
     def preview(self):
         return self.text[:125] + ' ...'
@@ -68,8 +67,10 @@ class Comment(models.Model):
 
     def like(self):
         self.rating += 1
+        self.save()
 
 
     def dislike(self):
         if self.rating > 0:
             self.rating -= 1
+        self.save()

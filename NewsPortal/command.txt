@@ -57,3 +57,26 @@ text_ = "Praesent suscipit quam id feugiat gravida. Duis eget lorem et ante aliq
 
 Comment.objects.create(text = text_, post_id = 3, user_id = 1)
 
+# Меняем рейтинги постов
+Post.like(Post.objects.get(id = 1))
+Post.like(Post.objects.get(id = 1))
+Post.like(Post.objects.get(id = 1))
+Post.like(Post.objects.get(id = 1))
+Post.like(Post.objects.get(id = 1))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 2))
+Post.like(Post.objects.get(id = 3))
+Post.like(Post.objects.get(id = 3))
+Post.like(Post.objects.get(id = 3))
+Post.like(Post.objects.get(id = 3))
+Post.dislike(Post.objects.get(id = 3))
+
+# Меняем рейтинги комментариев
+
+
+Comment.like(Comment.objects.filter(post_id = 1, user_id = 2)[0])
