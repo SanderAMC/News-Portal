@@ -26,10 +26,6 @@ class Author(models.Model):
         for i in range(len(posts)):
             compost_ratings += Author.query_rating_sum(Comment.objects.filter(post_id=posts[i].id).values("rating"))
 
-        print(f"Расчет рейтинга: по постам {posts_ratings}, по комментариям {comments_ratings},"
-              f" по комментариям к постам {compost_ratings},\n"
-              f"Итого {posts_ratings * 3 + comments_ratings + compost_ratings}")
-
         self.rating = posts_ratings * 3 + comments_ratings + compost_ratings
         self.save()
 

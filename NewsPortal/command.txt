@@ -1,20 +1,20 @@
 from news.models import *
 
-# Создаем пользователей
+# 1. Создаем пользователей
 User.objects.create_user('Иванов Иван Иванович')
 User.objects.create_user('Петров Петр Петрович')
 
-# Делаем пользователей авторами
+# 2. Делаем пользователей авторами
 Author.objects.create(user_id = 1)
 Author.objects.create(user_id = 2)
 
-# Создаем категории
+# 3. Создаем категории
 Category.objects.create(name = 'Компьютеры')
 Category.objects.create(name = 'Программирование')
 Category.objects.create(name = 'Операционные системы')
 Category.objects.create(name = 'Фреймворки')
 
-# Создаем 2 статьи и 1 новость
+# 4. Создаем 2 статьи и 1 новость
 text_ = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
 
 Post.objects.create(post_type = "A", title = "de Finibus Bonorum et Malorum", text = text_, author_id = 1)
@@ -27,7 +27,7 @@ text_ = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
 
 Post.objects.create(post_type = "N", title = "Lorem Ipsum", text = text_, author_id = 2)
 
-# Присваиваем новостям различные категории
+# 5. Присваиваем новостям различные категории
 PostCategory.objects.create(post_id = 1, category_id = 1)
 PostCategory.objects.create(post_id = 1, category_id = 3)
 PostCategory.objects.create(post_id = 1, category_id = 4)
@@ -36,7 +36,7 @@ PostCategory.objects.create(post_id = 2, category_id = 2)
 PostCategory.objects.create(post_id = 3, category_id = 2)
 PostCategory.objects.create(post_id = 3, category_id = 4)
 
-# Создаем комментарии к постам
+# 6. Создаем комментарии к постам
 text_ = "In libero ante, lobortis vel ornare in, ultricies nec elit. Etiam facilisis justo quis laoreet mollis. Proin felis orci, consectetur sed risus ut, laoreet tristique sapien. Nulla eu est aliquam, suscipit velit at, efficitur risus. Suspendisse egestas venenatis tellus quis malesuada. Suspendisse et leo condimentum, pretium eros id, luctus orci. Praesent nec porta risus, sed consequat libero. Nunc tincidunt egestas elementum. Curabitur lacus nulla, ultricies eu lacus vitae, accumsan varius urna. Cras ac est eu tellus feugiat ultricies et quis velit."
 
 Comment.objects.create(text = text_, post_id = 1, user_id = 2)
@@ -57,7 +57,7 @@ text_ = "Praesent suscipit quam id feugiat gravida. Duis eget lorem et ante aliq
 
 Comment.objects.create(text = text_, post_id = 3, user_id = 1)
 
-# Меняем рейтинги постов
+# 7. Меняем рейтинги постов и комментариев
 Post.like(Post.objects.get(id = 1))
 Post.like(Post.objects.get(id = 1))
 Post.like(Post.objects.get(id = 1))
@@ -76,7 +76,6 @@ Post.like(Post.objects.get(id = 3))
 Post.like(Post.objects.get(id = 3))
 Post.dislike(Post.objects.get(id = 3))
 
-# Меняем рейтинги комментариев
 Comment.like(Comment.objects.get(id = 1))
 Comment.like(Comment.objects.get(id = 1))
 Comment.like(Comment.objects.get(id = 1))
@@ -100,6 +99,17 @@ Comment.like(Comment.objects.get(id = 5))
 Comment.like(Comment.objects.get(id = 5))
 Comment.like(Comment.objects.get(id = 5))
 
-# Обновляем рейтинги авторов
+# 8. Обновляем рейтинги авторов
 Author.update_rating(Author.objects.get(id=1))
 Author.update_rating(Author.objects.get(id=2))
+
+# 9. Выводим имя и рейтинг лучшего автора / пользователя
+Author.objects.all().order_by('-rating').values('user__username', 'rating')[0]
+
+# 10. Выводим превью лучшей статьи с атрибутами
+Post.objects.all().order_by('-rating').values('author_id__user__username', 'rating', 'creation', 'title')[0]
+Post.preview(Post.objects.all().order_by('-rating')[0])
+
+# 11. Выводим все комментарии к лучшей статье
+p = Post.objects.all().order_by('-rating')
+Comment.objects.order_by('-creation').filter(post_id = p[0].id).values('creation', 'user_id__author__user_id__username', 'rating', 'text')
