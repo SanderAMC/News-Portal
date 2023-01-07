@@ -10,7 +10,7 @@
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-    <h3>Сегодня: {% current_time '%b %d %Y' %} </h3>
+    <h3>Сегодня: {% current_time '%d %b %Y' %} </h3>
     <h2>Новость "{{ one_new.title|censor }}" от : {{ one_new.creation|date:'d.m.Y' }} </h2>
        <table>
            <tr>
