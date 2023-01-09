@@ -1,0 +1,14 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block content %}
+    <h3>Сегодня: {% current_time '%d %b %Y' %} </h3>
+    <h2>{{ obj_type }}</h2>
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Save"/>
+    </form>
+
+{% endblock content %}

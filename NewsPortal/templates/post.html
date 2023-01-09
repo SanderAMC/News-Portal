@@ -5,20 +5,20 @@
 
 <!-- Название у нас будет Product -->
 {% block title %}
-Новость
+Посты
 {% endblock title %}
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
     <h3>Сегодня: {% current_time '%d %b %Y' %} </h3>
-    <h2>Новость "{{ one_new.title|censor }}" от : {{ one_new.creation|date:'d.m.Y' }} </h2>
+    <h2>{{ obj_type }} "{{ one_post.title|censor }}" от : {{ one_post.creation|date:'d.m.Y' }} </h2>
        <table>
            <tr>
-               <td>Полный текст новости</td>
+               <td>Полный текст:</td>
            </tr>
 
            <tr>
-               <td>{{ one_new.text|censor }}</td>
+               <td>{{ one_post.text|censor }}</td>
            </tr>
 
        </table>

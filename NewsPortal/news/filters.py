@@ -1,20 +1,19 @@
-from django_filters import FilterSet
+from django_filters import *
+import django_filters
 from .models import Post
+from django import forms
 
-# Создаем свой набор фильтров для модели.
-# FilterSet, который мы наследуем,
-# должен чем-то напомнить знакомые вам Django дженерики.
+
 class NewsFilter(FilterSet):
-   class Meta:
-       # В Meta классе мы должны указать Django модель,
-       # в которой будем фильтровать записи.
+
+    post_type = django_filters.ChoiceFilter(choices=Post.TYPES, label="Тип поста ", lookup_expr='iexact')
+    creation = django_filters.DateFilter(widget=forms.DateInput(attrs={'type': 'date'}), label="Создано позднее, чем ", lookup_expr='date__gt')
+
+    class Meta:
        model = Post
-       # В fields мы описываем по каким полям модели
-       # будет производиться фильтрация.
        fields = {
-           # поиск по названию
            'title': ['icontains'],
-           'text': ['icontains'],
-           # количество товаров должно быть больше или равно
-           'rating': ['gt'],
        }
+
+
+
