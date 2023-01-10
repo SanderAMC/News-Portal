@@ -23,12 +23,10 @@ class PostList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if 'news' in self.request.path.split('/'):
-#            context['object_list'] = Post.objects.filter(post_type='N')
             context['post_count'] = Post.objects.filter(post_type='N').count
             context['obj_type1'] = 'Новости'
             context['obj_type2'] = 'Новостей'
         else:
- #           context['object_list'] = Post.objects.filter(post_type='A')
             context['post_count'] = Post.objects.filter(post_type='A').count
             context['obj_type1'] = 'Статьи'
             context['obj_type2'] = 'Статей'
@@ -86,7 +84,6 @@ class OnePost(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if 'news' in self.request.path.split('/'):
-            #        context['object_list'] = Post.objects.order_by('-creation').filter(post_type='N')
             context['obj_type'] = 'Новость'
         else:
             context['obj_type'] = 'Статья'
@@ -101,7 +98,7 @@ class OnePost(DetailView):
         else:
             queryset = Post.objects.order_by('-creation').filter(post_type='A', id=post_id)
         self.filterset = NewsFilter(self.request.GET, queryset)
-        print(self.filterset.qs)
+
 # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
@@ -152,7 +149,7 @@ class PostUpdate(UpdateView):
         else:
             queryset = Post.objects.order_by('-creation').filter(post_type='A', id=post_id)
         self.filterset = NewsFilter(self.request.GET, queryset)
-        print(self.filterset.qs)
+
 # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
@@ -193,6 +190,6 @@ class PostDelete(DeleteView):
         else:
             queryset = Post.objects.order_by('-creation').filter(post_type='A', id=post_id)
         self.filterset = NewsFilter(self.request.GET, queryset)
-        print(self.filterset.qs)
+
 # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
