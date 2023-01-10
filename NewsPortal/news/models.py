@@ -23,6 +23,10 @@ class Author(models.Model):
         posts_ratings = Author.query_rating_sum(posts.values("rating"))
         comments_ratings = Author.query_rating_sum(Comment.objects.filter(user_id=self.user_id).values("rating"))
 
+        # или так
+        #posts_ratings = Post.objects.filter(author_id=1).aggregate(Sum("rating"))['rating__sum']
+        #comments_ratings1 = Comment.objects.filter(user_id=1).aggregate(Sum('rating'))['rating__sum']
+
         compost_ratings = 0
         for i in range(len(posts)):
             compost_ratings += Author.query_rating_sum(Comment.objects.filter(post_id=posts[i].id).values("rating"))
