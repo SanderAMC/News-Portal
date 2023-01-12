@@ -41,7 +41,10 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    pass
 
+    def __str__(self):
+        return f'{self.id}: {self.name}'
 
 class Post(models.Model):
     TYPES = [
@@ -82,6 +85,9 @@ class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     pass
+
+    def __str__(self):
+        return f'{self.id}: {self.category.name}: {self.post.title}'
 
 
 class Comment(models.Model):
