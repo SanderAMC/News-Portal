@@ -9,33 +9,38 @@
 {% endblock title %}
 
 {% block content %}
+
 <h1>Список "{{ obj_type1 }}"</h1>
    <hr>
    <h3>Сегодня: {% current_time %} </h3>
    <h3> {{ obj_type2 }} всего: {{ post_count }} </h3>
    {% if post_list %}
-       <table>
-           <tr>
-               <td>Название</td>
-               <td>Создано</td>
-               <td>Новость (кратко)</td>
-           </tr>
+    <div class="container">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Название</th>
+              <th scope="col">Создано</th>
+              <th scope="col">Новость (кратко)</th>
+            </tr>
+          </thead>
+  <tbody>
+
 
            {% for one in post_list %}
-           <tr>
+            <tr class="light">
                <!-- Не забываем, что переменные в шаблоне ничем не отличаются
                 от переменных в Python. Здесь также можно получать доступ к
                 полям объекта модели. Например, здесь мы выводим имя,
                 в следующем столбце описание, и т.д.  -->
-
                <td>{{ one.title|censor }}</td>
                <td>{{ one.creation|date:'d.M.Y' }}</td>
                <td>{{ one.text|truncatechars:20|censor }}</td>
-
            </tr>
            {% endfor %}
-
+         </tbody>
        </table>
+    </div>
    {% else %}
        <h2>{{ obj_type2 }} пока нет.</h2>
    {% endif %}

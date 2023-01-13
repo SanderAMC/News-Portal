@@ -1,0 +1,19 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block content %}
+    <h2>Страница авторизованного
+        {% if is_not_author %} пользователя {% else %} <b><u>автора</u></b> {% endif %}
+        {{request.user.first_name}} {{request.user.last_name}}
+        ({{request.user.username}})
+    </h2>
+    <div> Здесь может содержаться персональная информация для каждого пользователя </div>
+
+    <button> <a href="/accounts/logout/">Выйти</a> </button>
+
+    {% if is_not_author %}
+        <button> <a href="/user/upgrade/"> Хочу быть АВТОРОМ!</a> </button>
+    {% endif %}
+{% endblock %}

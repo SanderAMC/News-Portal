@@ -23,26 +23,29 @@ News
    <h3>Сегодня: {% current_time %} </h3>
    <h3> Здесь по заданию ТОЛЬКО НОВОСТИ! Всего новостей: {{ news_count }} </h3>
    {% if news_flist %}
-       <table>
-           <tr>
-               <td>Название</td>
-               <td>Создано</td>
-               <td>Новость (кратко)</td>
-           </tr>
+              <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Название</th>
+              <th scope="col">Создано</th>
+              <th scope="col">Новость (кратко)</th>
+            </tr>
+          </thead>
+  <tbody>
 
-           {% for one_new in news_flist %}
-           <tr>
+
+           {% for one in news_flist %}
+            <tr class="light">
                <!-- Не забываем, что переменные в шаблоне ничем не отличаются
                 от переменных в Python. Здесь также можно получать доступ к
                 полям объекта модели. Например, здесь мы выводим имя,
                 в следующем столбце описание, и т.д.  -->
-               <td>{{ one_new.title|censor }}</td>
-               <td>{{ one_new.creation|date:'d.M.Y' }}</td>
-               <td>{{ one_new.text|truncatechars:20|censor }}</td>
-
+               <td>{{ one.title|censor }}</td>
+               <td>{{ one.creation|date:'d.M.Y' }}</td>
+               <td>{{ one.text|truncatechars:20|censor }}</td>
            </tr>
            {% endfor %}
-
+         </tbody>
        </table>
    {% else %}
        <h2>Новостей пока нет.</h2>

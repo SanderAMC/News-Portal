@@ -1,6 +1,9 @@
 from django import forms
 from .models import Post
 from django.core.exceptions import ValidationError
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
+
 
 class PostForm(forms.ModelForm):
 
@@ -20,3 +23,4 @@ class PostForm(forms.ModelForm):
            })
 
        return cleaned_data
+

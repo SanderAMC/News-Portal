@@ -107,3 +107,4 @@ class Comment(models.Model):
         if self.rating > 0:
             self.rating -= 1
         self.save()
+
