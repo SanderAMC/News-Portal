@@ -16,4 +16,11 @@
     {% if is_not_author %}
         <button> <a href="/user/upgrade/"> Хочу быть АВТОРОМ!</a> </button>
     {% endif %}
+
+    <button> <a href="/user/edit/{{ request.user.id }}">Редактировать</a> </button>
+
+    {% if not is_not_author %}
+        <button> <a href="/user/degrade/"> Надоело быть автором ... </a> </button>
+    {% endif %}
+
 {% endblock %}

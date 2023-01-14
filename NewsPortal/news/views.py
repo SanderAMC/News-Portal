@@ -1,16 +1,11 @@
-# Импортируем класс, который говорит нам о том,
-# что в этом представлении мы будем выводить список объектов из БД
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Post, Author
 from .filters import NewsFilter
 from .forms import PostForm
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-#@method_decorator(login_required, name='dispatch')
 class PostList(ListView):
     # Указываем модель, объекты которой мы будем выводить
     model = Post
@@ -47,10 +42,7 @@ class PostList(ListView):
         else:
             queryset = Post.objects.order_by('-creation').filter(post_type='A')
         self.filterset = NewsFilter(self.request.GET, queryset)
-        if self.request.user.is_authenticated:
-            print(f'Да, залогинен {self.request.user}')
-        else:
-            print('Нет залогиненного пользователя')
+
 # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
@@ -127,7 +119,8 @@ class PostCreate(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        post.author = Author.objects.get(self.request.user)
+        post.author = Author.objects.get(user_id=self.request.user.id)
+
         if 'news' in self.request.path.split('/'):
             post.post_type = 'N'
             self.success_url = reverse_lazy('news_list')
@@ -176,7 +169,7 @@ class PostUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['user_name'] = self.request.user
-        # Добавляем в контекст объект фильтрации.
+
         return context
 
     def form_valid(self, form):
@@ -186,7 +179,7 @@ class PostUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
             self.success_url = reverse_lazy('arts_list')
         return super().form_valid(form)
 
-# Представление удаляющее товар.
+
 class PostDelete(DeleteView):
     model = Post
     template_name = 'post_delete.html'

@@ -9,13 +9,15 @@ class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.id}: {self.user.username}: {self.user.first_name} {self.user.last_name}: rating {self.rating}'
+
     @staticmethod
     def query_rating_sum(query: django.db.models.query.QuerySet):
         summ = 0
         for i in range(len(query)):
             summ += query[i]["rating"]
         return summ
-
 
     def update_rating(self):
 
@@ -34,6 +36,8 @@ class Author(models.Model):
 #_ = Comment.objects.prefetch_related('post_id').filter(post_id=posts[i].id).aggregate(Sum('rating'))['rating__sum']
 #if _ is not None:
 #compost_ratings += Comment.objects.prefetch_related('post_id').filter(post_id=posts[i].id).aggregate(Sum('rating'))['rating__sum']
+# или так
+# compost_ratings = Authors.objects.get(id=4).comment_set.all().aggregate(Sum('rating'))['rating__sum']
 
         self.rating = posts_ratings * 3 + comments_ratings + compost_ratings
         self.save()
