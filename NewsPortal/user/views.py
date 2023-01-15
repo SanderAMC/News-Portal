@@ -30,12 +30,14 @@ def upgrade_me(request):
 @login_required
 def sub_me(request, *args, **kwargs):
     CategoryUser.objects.create(category_id=kwargs['cat'], user_id=request.user.id)
-    return redirect('/news/search/', status_code=200)
+#    return redirect('/news/search/', status_code=200)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def unsub_me(request, *args, **kwargs):
     CategoryUser.objects.filter(category_id=kwargs['cat'], user_id=request.user.id).delete()
-    return redirect('/news/search/', status_code=200)
+#    return redirect('/news/search/', status_code=200)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 class UserView(LoginRequiredMixin, TemplateView):
