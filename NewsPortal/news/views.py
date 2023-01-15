@@ -1,10 +1,15 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from .models import Post, Author
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Post, Author, CategoryUser
+from django.contrib.auth.models import User
 from .filters import NewsFilter
 from .forms import PostForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+import django.db.models
+from django.template.loader import render_to_string
+from datetime import datetime
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import render, redirect
 
 class PostList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -59,13 +64,27 @@ class NewsListFiltered(ListView):
     context_object_name = 'news_flist'
     paginate_by = 10
 
+    @staticmethod
+    def is_subscribed(cat, query: django.db.models.query.QuerySet):
+        for i in range(len(query)):
+            if cat == str(query[i]['category_id']):
+                return True
+        return False
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['news_count'] = self.filterset.qs.count()
         # Добавляем в контекст объект фильтрации.
         context['filterset'] = self.filterset
+        context['sub_button'] = False
         if self.request.user.is_authenticated:
             context['user_name'] = self.request.user
+            if 'category' in self.filterset.data.keys():
+                context['subscribed'] = self.is_subscribed(self.filterset.data['category'],
+                                                           CategoryUser.objects.filter(user_id=self.request.user).values('category_id'))
+                if self.filterset.data['category'] != '':
+                    context['sub_button'] = True
+
         return context
 
    # Переопределяем функцию получения списка новостей
@@ -116,6 +135,35 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     # и новый шаблон, в котором используется форма.
     template_name = 'post_edit.html'
     permission_required = ('news.add_post', )
+
+    def post(self, request, *args, **kwargs):
+
+        title = request.POST['title']
+        text = request.POST['text']
+        user = request.user
+        id_to_send = CategoryUser.objects.filter(category_id=request.POST['category']).values('user_id')
+
+        for _ in id_to_send:
+            to_send = User.objects.filter(id=_['user_id']).values('first_name', 'last_name', 'username', 'email')
+            html_content = render_to_string(
+                'post_created.html',
+                {
+                    'title': title,
+                    'text': text,
+                    'cur_user': user,
+                    'user': f"{to_send[0]['first_name']} {to_send[0]['last_name']} ({to_send[0]['username']})"
+                }
+            )
+            msg = EmailMultiAlternatives(
+                subject=title,
+                body=text[:50],  # это то же, что и message
+                from_email='hollyhome@yandex.ru',
+                to=[to_send[0]['email']],  # это то же, что и recipients_list
+            )
+            msg.attach_alternative(html_content, "text/html")  # добавляем html
+            msg.send()
+
+        return super().post(self, request, *args, **kwargs)
 
     def form_valid(self, form):
         post = form.save(commit=False)

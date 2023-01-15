@@ -22,6 +22,26 @@ News
    <hr>
    <h3>Сегодня: {% current_time %} </h3>
    <h3> Здесь по заданию ТОЛЬКО НОВОСТИ! Всего новостей: {{ news_count }} </h3>
+
+{% if sub_button %}
+    Категория {{ filterset.data.category }}
+    {% if subscribed %} уже подписан {% endif %}
+
+            {% if subscribed %}
+                <form action="/user/unsub/{{ filterset.data.category }}/" method="POST">
+                    {% csrf_token %}
+                    <button>Отписаться</button>
+                </form>
+            {% else %}
+                <form action="/user/sub/{{ filterset.data.category }}/" method="POST">
+                    {% csrf_token %}
+                    <button>Подписаться</button>
+                </form>
+            {% endif %}
+
+
+{% endif %}
+
    {% if news_flist %}
               <table class="table table-hover">
           <thead>

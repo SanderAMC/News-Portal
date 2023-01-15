@@ -5,8 +5,9 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from .forms import UserForm
 from django.contrib.auth.models import User
-from news.models import Author
+from news.models import Author, CategoryUser
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 
 @login_required
 def degrade_me(request):
@@ -23,11 +24,18 @@ def upgrade_me(request):
     au_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         au_group.user_set.add(user)
-
     Author.objects.create(user_id=user.id)
-
     return redirect('/user')
 
+@login_required
+def sub_me(request, *args, **kwargs):
+    CategoryUser.objects.create(category_id=kwargs['cat'], user_id=request.user.id)
+    return redirect('/news/search/', status_code=200)
+
+@login_required
+def unsub_me(request, *args, **kwargs):
+    CategoryUser.objects.filter(category_id=kwargs['cat'], user_id=request.user.id).delete()
+    return redirect('/news/search/', status_code=200)
 
 
 class UserView(LoginRequiredMixin, TemplateView):
