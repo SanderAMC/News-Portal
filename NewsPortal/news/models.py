@@ -2,6 +2,8 @@ import django.db.models
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 # Create your models here.
 
@@ -64,6 +66,31 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.IntegerField(default=0)
 
+    @staticmethod
+    def send_email_to_subscribers(user, category, title, text, receivers_id):
+
+        for _ in receivers_id:
+            to_send = User.objects.filter(id=_['user_id']).values('first_name', 'last_name', 'username', 'email')
+            html_content = render_to_string(
+                'news_created.html',
+                {
+                    'title': title,
+                    'text': text,
+                    'cur_user': user,
+                    'category': category,
+                    'user': f"{to_send[0]['first_name']} {to_send[0]['last_name']} ({to_send[0]['username']})"
+                }
+            )
+            msg = EmailMultiAlternatives(
+                subject=title,
+                body=text[:50],  # это то же, что и message
+                from_email='hollyhome@yandex.ru',
+                to=[to_send[0]['email']],  # это то же, что и recipients_list
+            )
+            msg.attach_alternative(html_content, "text/html")  # добавляем html
+            msg.send()
+
+        return
 
     def like(self):
         self.rating += 1
@@ -119,3 +146,11 @@ class CategoryUser(models.Model):
 
     def __str__(self):
         return f'{self.id}: {self.user} - {self.category}'
+
+class NewsCreated(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=False)
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.id}: {self.user_id} - {self.user}: {self.date}: {self.count}'

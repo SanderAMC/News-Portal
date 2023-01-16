@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
-    'news',
+#    'news',
     'user',
+    'news.apps.NewsConfig',
 
     'allauth',
     'allauth.account',
@@ -161,7 +162,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 
 ACCOUNT_FORMS = {'signup': 'user.forms.BasicSignupForm'}
 
@@ -170,3 +173,5 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('DJ_EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('DJ_EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = os.getenv('DJ_DEFAULT_FROM_EMAIL')

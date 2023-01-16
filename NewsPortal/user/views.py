@@ -7,7 +7,7 @@ from .forms import UserForm
 from django.contrib.auth.models import User
 from news.models import Author, CategoryUser
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+
 
 @login_required
 def degrade_me(request):

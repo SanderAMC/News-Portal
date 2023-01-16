@@ -5,10 +5,26 @@
 {% block content %}
     <h3>Сегодня: {% current_time '%d %b %Y' %} </h3>
     <h2>{{ obj_type }}</h2>
+
+    {% if posts_today > 0 %}
+    <h3>
+        Всего за сегодня {{ posts_today }} из 3
+        {% if posts_today >= 3 %}
+        <h3>
+            Больше нельзя за сегодня создать новостей.
+        </h3>
+        {% endif %}
+    </h3>
+    {% endif %}
+
     <form action="" method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <input type="submit" value="Save"/>
+
+    {% if posts_today < 3 %}
+        <input type="submit" value="Save"/>
+    {% endif %}
+
     </form>
 
 {% endblock content %}

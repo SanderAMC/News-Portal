@@ -24,9 +24,8 @@ News
    <h3> Здесь по заданию ТОЛЬКО НОВОСТИ! Всего новостей: {{ news_count }} </h3>
 
 {% if sub_button %}
-    Категория {{ filterset.data.category }}
     {% if subscribed %} уже подписан {% endif %}
-
+        <br>
             {% if subscribed %}
                 <form action="/user/unsub/{{ filterset.data.category }}/" method="POST">
                     {% csrf_token %}
@@ -38,8 +37,7 @@ News
                     <button>Подписаться</button>
                 </form>
             {% endif %}
-
-
+        <br>
 {% endif %}
 
    {% if news_flist %}

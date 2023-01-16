@@ -1,15 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Author, CategoryUser
-from django.contrib.auth.models import User
+from .models import Post, Author, CategoryUser, NewsCreated
 from .filters import NewsFilter
 from .forms import PostForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 import django.db.models
-from django.template.loader import render_to_string
-from datetime import datetime
-from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import render, redirect
+from datetime import date
+from django.shortcuts import redirect
+
 
 class PostList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -137,31 +135,21 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post', )
 
     def post(self, request, *args, **kwargs):
+        if 'news' in self.request.path.split('/'):
+            if NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists() and \
+                    NewsCreated.objects.filter(user_id=self.request.user.id,
+                                               date=date.today()).values('count')[0]['count'] < 3:
 
-        title = request.POST['title']
-        text = request.POST['text']
-        user = request.user
-        id_to_send = CategoryUser.objects.filter(category_id=request.POST['category']).values('user_id')
+                title = request.POST['title']
+                text = request.POST['text']
+                category = request.POST['category']
+                user = request.user
+                id_to_send = CategoryUser.objects.filter(category_id=category).values('user_id')
 
-        for _ in id_to_send:
-            to_send = User.objects.filter(id=_['user_id']).values('first_name', 'last_name', 'username', 'email')
-            html_content = render_to_string(
-                'post_created.html',
-                {
-                    'title': title,
-                    'text': text,
-                    'cur_user': user,
-                    'user': f"{to_send[0]['first_name']} {to_send[0]['last_name']} ({to_send[0]['username']})"
-                }
-            )
-            msg = EmailMultiAlternatives(
-                subject=title,
-                body=text[:50],  # это то же, что и message
-                from_email='hollyhome@yandex.ru',
-                to=[to_send[0]['email']],  # это то же, что и recipients_list
-            )
-            msg.attach_alternative(html_content, "text/html")  # добавляем html
-            msg.send()
+                Post.send_email_to_subscribers(user, category, title, text, id_to_send)
+
+            else:
+                return redirect(request.META.get('HTTP_REFERER'))
 
         return super().post(self, request, *args, **kwargs)
 
@@ -178,15 +166,21 @@ class PostCreate(PermissionRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if 'news' in self.request.path.split('/'):
             context['obj_type'] = 'Новость'
-
         else:
             context['obj_type'] = 'Статья'
         if self.request.user.is_authenticated:
             context['user_name'] = self.request.user
+            if 'news' in self.request.path.split('/') and \
+                    NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists():
+                context['posts_today'] = NewsCreated.objects.filter(user_id=self.request.user.id,
+                                                                    date=date.today()).values('count')[0]['count']
+            else:
+                context['posts_today'] = 0
         # Добавляем в контекст объект фильтрации.
         return context
 
@@ -217,7 +211,7 @@ class PostUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['user_name'] = self.request.user
-
+            context['posts_today'] = -1
         return context
 
     def form_valid(self, form):
