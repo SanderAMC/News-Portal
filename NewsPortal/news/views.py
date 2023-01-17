@@ -86,7 +86,7 @@ class NewsListFiltered(ListView):
 
    # Переопределяем функцию получения списка новостей
     def get_queryset(self):
-        queryset = Post.objects.order_by('-creation').filter(post_type='N')
+        queryset = Post.objects.order_by('-creation')
         self.filterset = NewsFilter(self.request.GET, queryset)
         return self.filterset.qs
 

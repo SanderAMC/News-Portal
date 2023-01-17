@@ -9,53 +9,59 @@
         <!-- Favicon-->
         <!-- Core theme CSS (includes Bootstrap)-->
         {% load static %}
-	    <link href="{% static 'bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css' %}" rel="stylesheet" />
+	    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     </head>
     <body>
 
-        <script src="{% static 'jquery-3.6.3.min.js' %}"></script>
-        <script src="{% static 'bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-        <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div class="container-fluid">
-            <a class="navbar-brand">Портал новостей / статей</a>
-            <div class="collapse navbar-collapse" id="navbarColor03">
-              <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="/">#
-                    <span class="visually-hidden">(current)</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/news/">Новости</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/news/search">Новости (с поиском)</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/articles">Статьи</a>
-                </li>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand">Портал новостей / статей</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor03">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/">#
+                <span class="visually-hidden">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/news/">Новости</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/news/create/">Создать новость</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/articles">Статьи</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/articles/create/">Создать статью</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/news/search">Посты (с поиском)</a>
+            </li>
 
-                   {% if user_name %}
-                       <li class="nav-item">
-                           <a class="nav-link" href="/user">Пользователь {{ user_name }}</a>
-                       </li>
+           {% if user_name %}
+               <li class="nav-item">
+                   <a class="nav-link" href="/user">Пользователь {{ user_name }}</a>
+               </li>
 
-                       <li class="nav-item">
-                           <a class="nav-link" href="/accounts/logout">Logout</a>
-                       </li>
-                   {% else %}
-                       <li class="nav-item">
-                           <a class="nav-link" href="/accounts/login">Войти на сайт</a>
-                       </li>
-                   {% endif %}
-
-              </ul>
-
-            </div>
-          </div>
-        </nav>
+               <li class="nav-item">
+                   <a class="nav-link" href="/accounts/logout">Logout</a>
+               </li>
+           {% else %}
+               <li class="nav-item">
+                   <a class="nav-link" href="/accounts/login">Войти на сайт</a>
+               </li>
+           {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
 
         <!-- Page content-->
         <div class="container">
