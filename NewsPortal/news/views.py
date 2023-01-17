@@ -124,6 +124,7 @@ class OnePost(DetailView):
 # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
+
 class PostCreate(PermissionRequiredMixin, CreateView):
     # Указываем нашу разработанную форму
     form_class = PostForm

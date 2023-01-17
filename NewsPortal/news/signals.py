@@ -8,6 +8,7 @@ from django.db.models import F
 # в декоратор передаётся первым аргументом сигнал, на который будет реагировать эта функция, и в отправители надо передать также модель
 @receiver(post_save, sender=Post)
 def notify_managers_post(sender, instance, created, **kwargs):
+    print('POST signal')
     if created:
         if not NewsCreated.objects.filter(user_id=instance.author_id, date=date.today()).exists():
             NewsCreated.objects.create(user_id=instance.author_id, date=date.today(), count=1)
@@ -17,6 +18,7 @@ def notify_managers_post(sender, instance, created, **kwargs):
 
 @receiver(m2m_changed, sender=PostCategory)
 def notify_managers_post(sender, instance, action, reverse, model, pk_set, **kwargs):
+    print('M2M POST signal')
     if action == 'post_add':
         user_ = Author.objects.filter(id=instance.author_id).values('user__username')[0]['user__username']
         title = instance.title
