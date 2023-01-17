@@ -8,5 +8,4 @@ urlpatterns = [
     path('edit/<int:pk>/', UserUpdate.as_view(), name='user_edit'),
     path('sub/<int:cat>/', sub_me, name='user_sub'),
     path('unsub/<int:cat>/', unsub_me, name='user_unsub'),
-
 ]

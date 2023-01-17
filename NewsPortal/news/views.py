@@ -8,7 +8,6 @@ import django.db.models
 from datetime import date
 from django.shortcuts import redirect
 
-
 class PostList(ListView):
     # Указываем модель, объекты которой мы будем выводить
     model = Post
@@ -135,21 +134,11 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post', )
 
     def post(self, request, *args, **kwargs):
-        if 'news' in self.request.path.split('/'):
-            if NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists() and \
-                    NewsCreated.objects.filter(user_id=self.request.user.id,
-                                               date=date.today()).values('count')[0]['count'] < 3:
 
-                title = request.POST['title']
-                text = request.POST['text']
-                category = request.POST['category']
-                user = request.user
-                id_to_send = CategoryUser.objects.filter(category_id=category).values('user_id')
-
-                Post.send_email_to_subscribers(user, category, title, text, id_to_send)
-
-            else:
-                return redirect(request.META.get('HTTP_REFERER'))
+        if not (NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists() and
+                NewsCreated.objects.filter(user_id=self.request.user.id,
+                                           date=date.today()).values('count')[0]['count'] < 3):
+            return redirect(request.META.get('HTTP_REFERER'))
 
         return super().post(self, request, *args, **kwargs)
 
@@ -175,8 +164,7 @@ class PostCreate(PermissionRequiredMixin, CreateView):
             context['obj_type'] = 'Статья'
         if self.request.user.is_authenticated:
             context['user_name'] = self.request.user
-            if 'news' in self.request.path.split('/') and \
-                    NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists():
+            if NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists():
                 context['posts_today'] = NewsCreated.objects.filter(user_id=self.request.user.id,
                                                                     date=date.today()).values('count')[0]['count']
             else:

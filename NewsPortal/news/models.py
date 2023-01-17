@@ -67,7 +67,7 @@ class Post(models.Model):
     rating = models.IntegerField(default=0)
 
     @staticmethod
-    def send_email_to_subscribers(user, category, title, text, receivers_id):
+    def send_email_to_subscribers(user, category, title, text, receivers_id, url):
 
         for _ in receivers_id:
             to_send = User.objects.filter(id=_['user_id']).values('first_name', 'last_name', 'username', 'email')
@@ -78,6 +78,7 @@ class Post(models.Model):
                     'text': text,
                     'cur_user': user,
                     'category': category,
+                    'url': url,
                     'user': f"{to_send[0]['first_name']} {to_send[0]['last_name']} ({to_send[0]['username']})"
                 }
             )

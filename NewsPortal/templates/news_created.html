@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Новость в категории {{ category }}: {{ title }}</title>
+    <title>Новость в категории "{{ category }}": {{ title }}</title>
 </head>
 <body>
     <h2>Здравствуй {{ user }}</h2>
-    <p>Новая новость от {{ cur_user }} в твоем любимом разделе!</p>
-    <p>Текст новости: {{ text|truncatechars:50 }}</p>
+    <p>Новая новость "{{ title }}" от "{{ cur_user }}" в твоем любимом разделе "{{ category }}"!</p>
+    <p>Ссылка: <a href="{{ url }}"> {{ text|truncatechars:50 }}</a></p>
 </body>
 </html>
