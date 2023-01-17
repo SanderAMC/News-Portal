@@ -45,27 +45,44 @@
        <h2>{{ obj_type2 }} пока нет.</h2>
    {% endif %}
 
-   {# Информация о предыдущих страницах #}
-   {% if page_obj.has_previous %}
-       <a href="?{% url_replace page=1 %}">1</a>
-       {% if page_obj.previous_page_number != 1 %}
-           ...
-           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
-       {% endif %}
-   {% endif %}
+<div class="container">
+  <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{% url_replace page=1 %}">1</a>
+        </li>
+            {% if page_obj.previous_page_number != 1 %}
+      <li class="page-item">
+                <a class="page-link disabled"> ... </a>
+      </li>
+                <li class="page-item">
+                <a class="page-link" href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+                </li>
+            {% endif %}
+        {% endif %}
 
-   {# Информация о текущей странице #}
+         {# Информация о текущей странице #}
     {% if page_obj.paginator.num_pages > 1 %}
-        {{ page_obj.number }}
+      <li class="page-item">
+        <a class="page-link active"> {{ page_obj.number }} </a>
+      </li>
     {% endif %}
 
    {# Информация о следующих страницах #}
    {% if page_obj.has_next %}
-       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+             <li class="page-item">
+       <a class="page-link" href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+                 </li>
        {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+      <li class="page-item">
+           <a class="page-link disabled"> ... </a>
+      </li>
+      <li class="page-item">
+           <a class="page-link" href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+          </li>
        {% endif %}
    {% endif %}
+  </ul>
+</div>
 
 {% endblock content %}
