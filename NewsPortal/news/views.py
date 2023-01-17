@@ -135,11 +135,11 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post', )
 
     def post(self, request, *args, **kwargs):
-
-        if not (NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists() and
-                NewsCreated.objects.filter(user_id=self.request.user.id,
-                                           date=date.today()).values('count')[0]['count'] < 3):
-            return redirect(request.META.get('HTTP_REFERER'))
+        if NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).exists():
+            if NewsCreated.objects.filter(user_id=self.request.user.id, date=date.today()).values('count')[0]['count'] < 3:
+                return super().post(self, request, *args, **kwargs)
+            else:
+                return redirect(request.META.get('HTTP_REFERER'))
 
         return super().post(self, request, *args, **kwargs)
 

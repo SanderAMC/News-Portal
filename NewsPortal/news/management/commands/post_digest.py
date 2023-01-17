@@ -24,7 +24,7 @@ def inform_for_new_posts():
     post_source = Post.objects.filter(Q(creation__gte=date_from) & Q(creation__lt=date_to))
     users = CategoryUser.objects.all().values('user_id').distinct()
     title = f'Дайджест новых постов'
-#    print(users)
+#    print(post_source)
 
     for i in range(users.count()):
 #        print(users[i]['user_id'])
@@ -33,8 +33,11 @@ def inform_for_new_posts():
         user_name = f"{user[0]['first_name']} {user[0]['last_name']} ({user[0]['username']})"
         for c in range(categories.count()):
             category_name = categories[c]['category_id__name']
+#            print(user)
 #            print(category_name)
             posts = post_source.filter(category__id=categories[c]['category_id'])
+            if posts.count() == 0:
+                continue
 #            print(posts)
             html_content = render_to_string(
                         'post_digest.html',
@@ -58,6 +61,7 @@ def inform_for_new_posts():
 
             msg.attach_alternative(html_content, "text/html")  # добавляем html
             msg.send()
+
     print('Рассылка дайджеста завершена')
 
 def delete_old_job_executions(max_age=604_800):

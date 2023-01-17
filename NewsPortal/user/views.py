@@ -15,7 +15,7 @@ def degrade_me(request):
     au_group = Group.objects.get(name='authors')
     if request.user.groups.filter(name='authors').exists():
         au_group.user_set.remove(user)
-    Author.objects.filter(user_id=user.id).delete()
+#    Author.objects.filter(user_id=user.id).delete()
     return redirect('/user')
 
 @login_required
@@ -24,7 +24,8 @@ def upgrade_me(request):
     au_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         au_group.user_set.add(user)
-    Author.objects.create(user_id=user.id)
+    if not Author.objects.filter(user_id=user.id).exists():
+        Author.objects.create(user_id=user.id)
     return redirect('/user')
 
 @login_required
