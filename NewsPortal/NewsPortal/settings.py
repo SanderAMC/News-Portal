@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
-#    'news',
     'user',
     'news.apps.NewsConfig',
 
@@ -57,6 +56,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
+
+    'celery',
 ]
 
 SITE_ID = 1
@@ -181,3 +182,12 @@ DEFAULT_FROM_EMAIL = os.getenv('DJ_DEFAULT_FROM_EMAIL')
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
+CELERY_BROKER_URL = os.getenv('REDIS_URL')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+#CELERY_REDIS_USERNAME = os.getenv('REDIS_USER')
+#CELERY_REDIS_PASSWORD = os.getenv('REDIS_PASS')
