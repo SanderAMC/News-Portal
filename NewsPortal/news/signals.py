@@ -3,7 +3,7 @@ from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from .models import Post, NewsCreated, PostCategory, CategoryUser, Category, Author
 from django.db.models import F
-
+from .tasks import send_email_to_subscribers
 
 # в декоратор передаётся первым аргументом сигнал, на который будет реагировать эта функция, и в отправители надо передать также модель
 @receiver(post_save, sender=Post)
@@ -29,4 +29,5 @@ def notify_post_subscribers(sender, instance, action, reverse, model, pk_set, **
             id_to_send = CategoryUser.objects.filter(category_id=cat_['category_id']).values('user_id')
             category = Category.objects.filter(id=cat_['category_id']).values('name')[0]['name']
 
-            Post.send_email_to_subscribers(user_, category, title, text, id_to_send, url)
+            for _ in id_to_send:
+                send_email_to_subscribers.apply_async([user_, category, title, text, _['user_id'], url], countdown=10)

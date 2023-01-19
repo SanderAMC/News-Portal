@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
 
-    'celery',
 ]
 
 SITE_ID = 1
@@ -188,6 +187,3 @@ CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
-#CELERY_REDIS_USERNAME = os.getenv('REDIS_USER')
-#CELERY_REDIS_PASSWORD = os.getenv('REDIS_PASS')

@@ -44,6 +44,7 @@ News
               <table class="table table-hover">
           <thead>
             <tr>
+                <th scope="col">Id</th>
               <th scope="col">Название</th>
               <th scope="col">Создано</th>
               <th scope="col">Новость (кратко)</th>
@@ -58,6 +59,7 @@ News
                 от переменных в Python. Здесь также можно получать доступ к
                 полям объекта модели. Например, здесь мы выводим имя,
                 в следующем столбце описание, и т.д.  -->
+                <td>{{ one.id }}</td>
                <td>{{ one.title|censor }}</td>
                <td>{{ one.creation|date:'d.M.Y' }}</td>
                <td>{{ one.text|truncatechars:20|censor }}</td>
