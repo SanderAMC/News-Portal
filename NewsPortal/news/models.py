@@ -11,7 +11,7 @@ class Author(models.Model):
     rating = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.id}: {self.user.username}: {self.user.first_name} {self.user.last_name}: rating {self.rating}'
+        return f'{self.user.first_name} {self.user.last_name} ({self.user.username})'
 
     @staticmethod
     def query_rating_sum(query: django.db.models.query.QuerySet):
